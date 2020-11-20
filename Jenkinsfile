@@ -27,11 +27,13 @@ node('centos8') {
     ]) {
 
 
+      env.VERSION_GIT_TAG = sh(returnStdout: true, script: 'git tag -l v* --points-at HEAD')
+
       sh "env"
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-        //sh "echo podman tag ${imageName} ${imageName}:${tag}"
+        sh "echo podman tag ${imageName} ${imageName}:${env.VERSION_GIT_TAG}"
         // push to dockerhub (for now)
         sh "echo podman tag ${imageName} ${imageName}:latest"
 
