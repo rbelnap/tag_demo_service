@@ -21,12 +21,11 @@ node('centos8') {
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-      steps {
         sh "echo podman tag ${imageName} ${imageName}:${tag}"
         // push to dockerhub (for now)
-      }
         sh "echo podman tag ${imageName} ${imageName}:latest"
 
         //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
+    }
   }
 }
