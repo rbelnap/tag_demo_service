@@ -35,7 +35,7 @@ node('centos8') {
 
         sh "echo podman tag ${imageName} ${imageName}:${env.VERSION_GIT_TAG}"
         // push to dockerhub (for now)
-        sh "echo podman tag ${imageName} ${imageName}:latest"
+        //sh "echo podman tag ${imageName} ${imageName}:latest"
 
         //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
     }
