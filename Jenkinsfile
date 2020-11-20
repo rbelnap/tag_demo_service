@@ -31,7 +31,7 @@ node('centos8') {
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-        sh "echo podman tag ${imageName} ${imageName}:${tag}"
+        //sh "echo podman tag ${imageName} ${imageName}:${tag}"
         // push to dockerhub (for now)
         sh "echo podman tag ${imageName} ${imageName}:latest"
 
