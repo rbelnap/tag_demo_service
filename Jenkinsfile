@@ -5,7 +5,17 @@ node('centos8') {
   def imageName = 'tag_demo_service'
 
   stage('checkout') {
-    checkout scm 
+    checkout([
+      $class: 'GitSCM',
+      doGenerateSubmoduleConfigurations: false,
+      extensions: [[
+                     $class: 'SubmoduleOption',
+                     disableSubModules: true,
+                     noTags: false
+                   ]],
+      userRemoteConfigs:[[url: gitUrl]]
+    ])
+
   }
 
   stage('build') {
