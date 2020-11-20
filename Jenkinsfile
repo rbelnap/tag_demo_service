@@ -16,17 +16,19 @@ node('centos8') {
       )
     ]) {
 
-      // set tag to branch if it isn't master
-      if (env.BRANCH_NAME != 'master') {
-        tag = "${env.BRANCH_NAME}"
-      }
 
       sh "env"
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-      // push to dockerhub (for now)
-      //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}:${tag}"
+      when { tag "v*" }
+      steps {
+        sh "echo podman tag ${imageName} ${imageName}:${tag}"
+        // push to dockerhub (for now)
+      }
+        sh "echo podman tag ${imageName} ${imageName}:latest"
+
+        //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
     }
   }
 }
