@@ -27,6 +27,7 @@ node('centos8') {
     ]) {
 
 
+      // grab the list of tags starting with 'v' that reference this commit
       env.VERSION_GIT_TAG = sh(returnStdout: true, script: 'git tag -l v* --points-at HEAD')
       // strip leading 'v' off version tag
       def imageTag = env.VERSION_GIT_TAG.drop(1)
@@ -35,11 +36,11 @@ node('centos8') {
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-        sh "podman tag ${imageName} ${imageName}:${imageTag}"
-        // push to dockerhub (for now)
-        sh "podman tag ${imageName} ${imageName}:latest"
+      sh "podman tag ${imageName} ${imageName}:${imageTag}"
+      sh "podman tag ${imageName} ${imageName}:latest"
 
-        //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
+      // push to dockerhub (for now)
+      //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
     }
   }
 }
