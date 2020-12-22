@@ -36,7 +36,12 @@ node('centos8') {
       // build the image
       sh "podman build --format=docker -t ${imageName} ."
 
-      sh "podman tag ${imageName} ${imageName}:${imageTag}"
+      // if we have any git version tags, add them as image tags
+      if (env.VERSION_GIT_TAG) {
+        sh "podman tag ${imageName} ${imageName}:${imageTag}"
+      }
+
+      // always tag with latest
       sh "podman tag ${imageName} ${imageName}:latest"
 
       // push to dockerhub (for now)
