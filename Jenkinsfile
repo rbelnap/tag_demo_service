@@ -30,7 +30,6 @@ node('centos8') {
       // grab the list of tags starting with 'v' that reference this commit
       env.VERSION_GIT_TAG = sh(returnStdout: true, script: 'git tag -l v* --points-at HEAD')
       // strip leading 'v' off version tag
-      def imageTag = env.VERSION_GIT_TAG.drop(1)
 
       sh "env"
       // build the image
@@ -38,7 +37,12 @@ node('centos8') {
 
       // if we have any git version tags, add them as image tags
       if (env.VERSION_GIT_TAG) {
-        sh "podman tag ${imageName} ${imageName}:${imageTag}"
+        // there may be multiple versions tagged with the same commit, use them all
+        for( tag in split(env.VERSION_GIT_TAG, '\n')
+          {
+           def imageTag = tag.drop(1)
+           sh "podman tag ${imageName} ${imageName}:${imageTag}"
+          }
       }
 
       // always tag with latest
