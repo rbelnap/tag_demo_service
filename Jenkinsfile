@@ -38,7 +38,7 @@ node('centos8') {
       // if we have any git version tags, add them as image tags
       if (env.VERSION_GIT_TAG) {
         // there may be multiple versions tagged with the same commit, use them all
-        for( tag in split(env.VERSION_GIT_TAG.toString(), '\n'))
+        for( tag in env.VERSION_GIT_TAG.split('\n'))
           {
            def imageTag = tag.drop(1)
            sh "podman tag ${imageName} ${imageName}:${imageTag}"
