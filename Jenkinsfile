@@ -48,6 +48,8 @@ node('centos8') {
       // always tag with latest
       sh "podman tag ${imageName} ${imageName}:latest"
 
+      // trigger tagger job after build to pick up any extra tags
+      build job: "../tag_demo/", wait: true
       // push to dockerhub (for now)
       //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
     }
