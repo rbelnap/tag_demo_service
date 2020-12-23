@@ -26,14 +26,16 @@ node('centos8') {
       )
     ]) {
 
+      sh "env"
+      // build the image
+      sh "podman build --format=docker -t ${imageName} ."
+  }
+
+  stage('tag_push') {
 
       // grab the list of tags starting with 'v' that reference this commit
       env.VERSION_GIT_TAG = sh(returnStdout: true, script: 'git tag -l v* --points-at HEAD')
       // strip leading 'v' off version tag
-
-      sh "env"
-      // build the image
-      sh "podman build --format=docker -t ${imageName} ."
 
       // if we have any git version tags, add them as image tags
       if (env.VERSION_GIT_TAG) {
@@ -49,10 +51,12 @@ node('centos8') {
       sh "podman tag ${imageName} ${imageName}:latest"
 
       // trigger tagger job after build to pick up any extra tags
+      // we don't want the tagger job to push the tags it adds, we'll do that
+      // ourselves
       build job: "tag_demo/qa", wait: true, parameters: [ string(name: 'PUSH', value: 'false') ]
 
       // push to dockerhub (for now)
-      //sh "podman push --creds \"$HUB_LOGIN\" ${imageName} docker://docker.io/veupathdb/${imageName}"
+      //sh "podman push --creds \"$HUB_LOGIN\" --all-tags ${imageName} docker://docker.io/veupathdb/${imageName}"
     }
   }
 }
